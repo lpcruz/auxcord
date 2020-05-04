@@ -1,12 +1,11 @@
 class Twitter {
   constructor(api) {
     this.api = api;
+    this.TWITTER_API_ROUTES = {
+      POST: 'statuses/update',
+      SEARCH: 'search/tweets'
+    };
   }
-
-  TWITTER_API_ROUTES = {
-    POST: 'statuses/update',
-    SEARCH: 'search/tweets'
-  };
 
   /**
    * Tweets a status via Twitter's POST method to statuses/update
