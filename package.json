@@ -1,0 +1,24 @@
+{
+  "name": "auxcord",
+  "version": "1.0.0",
+  "description": "Crowdsource song suggestions on Twitter and auto-create a spotify playlist.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo this is working...i guess",
+    "get:suggestions": "node ./jobs/get-suggestions"
+  },
+  "keywords": [
+    "spotify",
+    "twitter"
+  ],
+  "author": "lcruz",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0"
+  },
+  "dependencies": {
+    "spotify-web-api-node": "^4.0.0",
+    "twitter": "^1.7.1"
+  }
+}
