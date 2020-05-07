@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo this is working...i guess",
-    "get:suggestions": "node ./jobs/get-suggestions"
+    "get:suggestions": "node ./jobs/get-suggestions",
+    "ask:suggestions": "node ./jobs/ask-for-suggestions"
   },
   "keywords": [
     "spotify",
@@ -18,7 +19,18 @@
     "eslint": "^6.8.0"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "node-html-parser": "^1.2.16",
+    "open": "^7.0.3",
+    "opn": "^6.0.0",
+    "querystring": "^0.2.0",
+    "request": "^2.88.2",
     "spotify-web-api-node": "^4.0.0",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "url": "^0.11.0"
   }
 }

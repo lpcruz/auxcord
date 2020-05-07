@@ -14,7 +14,7 @@ const getTrack = async (track, artist) => {
 
 /**
  * Gets the replies from a tweet and curates them into a spotify playlist
- * @param {string} id -- The id of the tweet asking for songs 
+ * @param {string} id -- The id of the tweet asking for songs
  * @param {string} twitterHandle  -- Twitter handle of the tweet under analysis (e.g. @suggestmesongs)
  * @todo: Actually curate it on spotify
  */
@@ -33,5 +33,5 @@ const getAndCurate = async (id, twitterHandle) => {
 };
 
 // testing methods
-getAndCurate('@suggestmesongs', '1257050067665596418'); // should return an array of songs 
+getAndCurate('@suggestmesongs', '1257050067665596418'); // should return an array of songs
 getTrack('Already', 'Beyonce'); // should return an array of songs based on search
