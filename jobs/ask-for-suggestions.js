@@ -5,29 +5,24 @@ const twitter = new TwitterAPI(TwitterClient);
 const {
   getCurrentMonthName,
 } = require('../utils/time');
-var express = require('express'); // Express web server framework
-var request = require('request'); // "Request" library
-var cors = require('cors');
-var querystring = require('querystring');
-var cookieParser = require('cookie-parser');
+const express = require('express'); // Express web server framework
+const request = require('request'); // "Request" library
+const cors = require('cors');
+const querystring = require('querystring');
+const cookieParser = require('cookie-parser');
 
-var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
-var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.SPOTIFY_CLIENT_REDIRECTURI; // Your redirect uri
-
-var code;
-var access_token;
-var refresh_token;
-var scope;
+const client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
+const redirect_uri = process.env.SPOTIFY_CLIENT_REDIRECTURI; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function(length) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+generateRandomString(length) {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   for (var i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -35,9 +30,9 @@ var generateRandomString = function(length) {
   return text;
 };
 
-var stateKey = 'spotify_auth_state';
+const stateKey = 'spotify_auth_state';
 
-var app = express();
+const app = express();
 
 app.use(express.static(__dirname + '/public'))
    .use(cors())
@@ -45,7 +40,7 @@ app.use(express.static(__dirname + '/public'))
 
 app.get('/login', function(req, res) {
 
-  var state = generateRandomString(16);
+  const state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   // your application requests authorization
@@ -65,9 +60,9 @@ app.get('/callback', function(req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
-  code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+  const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
     res.redirect('/#' +
@@ -76,7 +71,7 @@ app.get('/callback', function(req, res) {
       }));
   } else {
     res.clearCookie(stateKey);
-    var authOptions = {
+    const authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
@@ -95,7 +90,7 @@ app.get('/callback', function(req, res) {
         access_token = body.access_token;
         refresh_token = body.refresh_token;
 
-        var options = {
+        const options = {
           url: 'https://api.spotify.com/v1/me',
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
@@ -127,8 +122,8 @@ app.get('/callback', function(req, res) {
 app.get('/refresh_token', function(req, res) {
 
   // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
+  const refresh_token = req.query.refresh_token;
+  const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
     form: {
@@ -151,8 +146,8 @@ app.get('/refresh_token', function(req, res) {
 app.get('/create_playlist', function(req, res) {
 
   // refresh token to ensure access token isn't expired
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
+  const refresh_token = req.query.refresh_token;
+  const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
     form: {
@@ -171,10 +166,10 @@ app.get('/create_playlist', function(req, res) {
     }
   });
 
-  var playlist_name = `${getCurrentMonthName()} Playlist`;
+  const playlist_name = `${getCurrentMonthName()} Playlist`;
 
   // create json request with desired parameters
-  var authOptions = {
+  const options = {
     url: 'https://api.spotify.com/v1/users/{user_id}/playlists',
     headers: { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' },
     body: { 'name': playlist_name },
@@ -184,7 +179,7 @@ app.get('/create_playlist', function(req, res) {
   console.log(authOptions);
 
   // post to Spotify api and tweet if no error
-  request.post(authOptions, function(error, response, body) {
+  request.post(options, function(error, response, body) {
     if (!error) {
       const header = `🎧 ${getCurrentMonthName()} Playlist is ready to get made!`;
       twitter.tweet(`${header}\nPlease comment below. One song per comment!`);
