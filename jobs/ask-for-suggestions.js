@@ -20,7 +20,7 @@ const redirect_uri = process.env.SPOTIFY_CLIENT_REDIRECTURI; // Your redirect ur
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-generateRandomString(length) {
+function generateRandomString(length) {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -35,10 +35,10 @@ const stateKey = 'spotify_auth_state';
 const app = express();
 
 app.use(express.static(__dirname + '/public'))
-   .use(cors())
-   .use(cookieParser());
+  .use(cors())
+  .use(cookieParser());
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
 
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -55,7 +55,7 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -84,7 +84,7 @@ app.get('/callback', function(req, res) {
       json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
+    request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
 
         access_token = body.access_token;
@@ -92,12 +92,14 @@ app.get('/callback', function(req, res) {
 
         const options = {
           url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          },
           json: true
         };
 
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
+        request.get(options, function (error, response, body) {
           console.log(body);
         });
 
@@ -119,13 +121,15 @@ app.get('/callback', function(req, res) {
   }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
 
   // requesting access token from refresh token
   const refresh_token = req.query.refresh_token;
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+    headers: {
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
     form: {
       grant_type: 'refresh_token',
       refresh_token: refresh_token
@@ -133,7 +137,7 @@ app.get('/refresh_token', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       access_token = body.access_token;
       res.send({
@@ -143,13 +147,15 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-app.get('/create_playlist', function(req, res) {
+app.get('/create_playlist', function (req, res) {
 
   // refresh token to ensure access token isn't expired
   const refresh_token = req.query.refresh_token;
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+    headers: {
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
     form: {
       grant_type: 'refresh_token',
       refresh_token: refresh_token
@@ -157,7 +163,7 @@ app.get('/create_playlist', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       access_token = body.access_token;
       res.send({
@@ -171,15 +177,20 @@ app.get('/create_playlist', function(req, res) {
   // create json request with desired parameters
   const options = {
     url: 'https://api.spotify.com/v1/users/{user_id}/playlists',
-    headers: { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' },
-    body: { 'name': playlist_name },
+    headers: {
+      'Authorization': 'Bearer ' + access_token,
+      'Content-Type': 'application/json'
+    },
+    body: {
+      'name': playlist_name
+    },
     json: true
   };
 
   console.log(authOptions);
 
   // post to Spotify api and tweet if no error
-  request.post(options, function(error, response, body) {
+  request.post(options, function (error, response, body) {
     if (!error) {
       const header = `🎧 ${getCurrentMonthName()} Playlist is ready to get made!`;
       twitter.tweet(`${header}\nPlease comment below. One song per comment!`);
